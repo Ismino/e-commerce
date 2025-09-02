@@ -9,7 +9,11 @@ export async function GET(req: NextRequest) {
   const q = sp.get("q") ?? undefined;
   const category = sp.get("category") ?? undefined;
 
-  const sort = (sp.get("sort") ?? "newest") as "price-asc" | "price-desc" | "rating-desc" | "newest";
+  const sort = (sp.get("sort") ?? "newest") as
+    | "price-asc"
+    | "price-desc"
+    | "rating-desc"
+    | "newest";
   const priceMin = sp.get("priceMin");
   const priceMax = sp.get("priceMax");
   const ratingMin = sp.get("ratingMin");
@@ -18,14 +22,15 @@ export async function GET(req: NextRequest) {
   const pageSize = Math.max(1, Math.min(60, Number(sp.get("pageSize") ?? "12")));
   const skip = (page - 1) * pageSize;
 
-  
   const needsLocal = !!priceMin || !!priceMax || !!ratingMin || sort !== "newest";
 
   // 1) Paginera hos DummyJSON (limit+skip) när det går
   if (!needsLocal) {
     let endpoint = `${BASE}/products?limit=${pageSize}&skip=${skip}`;
-    if (q) endpoint = `${BASE}/products/search?q=${encodeURIComponent(q)}&limit=${pageSize}&skip=${skip}`;
-    if (!q && category) endpoint = `${BASE}/products/category/${encodeURIComponent(category)}?limit=${pageSize}&skip=${skip}`;
+    if (q)
+      endpoint = `${BASE}/products/search?q=${encodeURIComponent(q)}&limit=${pageSize}&skip=${skip}`;
+    if (!q && category)
+      endpoint = `${BASE}/products/category/${encodeURIComponent(category)}?limit=${pageSize}&skip=${skip}`;
 
     const r = await fetch(endpoint, { cache: "no-store" });
     if (!r.ok) return NextResponse.json({ message: "Upstream error" }, { status: 500 });
@@ -45,7 +50,8 @@ export async function GET(req: NextRequest) {
   const BIG_LIMIT = 1000;
   let endpoint = `${BASE}/products?limit=${BIG_LIMIT}`;
   if (q) endpoint = `${BASE}/products/search?q=${encodeURIComponent(q)}&limit=${BIG_LIMIT}`;
-  if (!q && category) endpoint = `${BASE}/products/category/${encodeURIComponent(category)}?limit=${BIG_LIMIT}`;
+  if (!q && category)
+    endpoint = `${BASE}/products/category/${encodeURIComponent(category)}?limit=${BIG_LIMIT}`;
 
   const raw = await fetch(endpoint, { cache: "no-store" });
   if (!raw.ok) return NextResponse.json({ message: "Upstream error" }, { status: 500 });
@@ -60,10 +66,14 @@ export async function GET(req: NextRequest) {
 
   list = list.sort((a, b) => {
     switch (sort) {
-      case "price-asc": return a.price - b.price;
-      case "price-desc": return b.price - a.price;
-      case "rating-desc": return b.rating - a.rating;
-      default: return b.id - a.id; // "newest" proxy
+      case "price-asc":
+        return a.price - b.price;
+      case "price-desc":
+        return b.price - a.price;
+      case "rating-desc":
+        return b.rating - a.rating;
+      default:
+        return b.id - a.id; // "newest" proxy
     }
   });
 

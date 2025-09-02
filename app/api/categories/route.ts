@@ -6,9 +6,7 @@ export const revalidate = 0;
 type RawCat = string | { slug?: string; name?: string; url?: string };
 
 function humanize(slug: string) {
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export async function GET() {
@@ -22,10 +20,9 @@ export async function GET() {
 
     const cats = (Array.isArray(raw) ? raw : [])
       .map((c) => {
-        const slug = typeof c === "string" ? c : c.slug ?? "";
+        const slug = typeof c === "string" ? c : (c.slug ?? "");
         if (!slug) return null;
-        const name =
-          typeof c === "string" ? humanize(c) : c.name ?? humanize(slug);
+        const name = typeof c === "string" ? humanize(c) : (c.name ?? humanize(slug));
         return { slug, name };
       })
       .filter(Boolean) as { slug: string; name: string }[];

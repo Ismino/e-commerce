@@ -5,16 +5,29 @@
 @tailwind utilities;
 
 /* Brand-färger */
-:root { --ring: 340 82% 52%; } /* ~rose-500 */
+:root {
+  --ring: 340 82% 52%;
+} /* ~rose-500 */
 
-* { box-sizing: border-box; }
-html, body { padding: 0; margin: 0; }
-button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
-::selection { background: #f43f5e22; }
+::selection {
+  background: #f43f5e22;
+}
 
 /* --- Google Fonts classes --- */
 .satisfy-regular {
@@ -28,4 +41,3 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   font-weight: 400;
   font-style: normal;
 }
-

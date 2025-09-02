@@ -7,15 +7,17 @@ import "./globals.css";
 import Providers from "./providers";
 import CartDrawer from "@/components/CartDrawer";
 import CartButton from "@/components/CartButton";
-
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
+// Google Font via next/font 
+import { Satisfy } from "next/font/google";
+const satisfy = Satisfy({ weight: "400", subsets: ["latin"] });
+
 function Brand() {
   return (
-    // Satisfy används bara här
-    <a href="/catalog" className="satisfy-regular text-xl md:text-2xl">
+    <a href="/catalog" className={`${satisfy.className} text-xl md:text-2xl`}>
       Bloom Boutique
     </a>
   );
@@ -24,14 +26,6 @@ function Brand() {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Laddar bara Satisfy */}
-        <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet" />
-      </head>
-
-      {/* Ingen specialfont på body */}
       <body className="min-h-dvh bg-gradient-to-br from-rose-50 via-white to-sky-50 text-neutral-900">
         <Providers>
           <header className="sticky top-0 z-10 border-b border-white/20 bg-gradient-to-r from-rose-500 to-sky-500 text-white shadow-sm">

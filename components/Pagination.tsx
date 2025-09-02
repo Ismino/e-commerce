@@ -23,14 +23,32 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
   return (
     <nav aria-label="Pagination" className="mt-4 flex items-center justify-center gap-2">
-      <button className={`${btn} disabled:opacity-50`} onClick={() => go(page - 1)} disabled={page <= 1} aria-label="Previous page">Prev</button>
+      <button
+        className={`${btn} disabled:opacity-50`}
+        onClick={() => go(page - 1)}
+        disabled={page <= 1}
+        aria-label="Previous page"
+      >
+        Prev
+      </button>
       {pages.map((p) => (
-        <button key={p} onClick={() => go(p)} aria-current={p === page ? "page" : undefined}
-                className={`${btn} ${p === page ? active : ""}`}>
+        <button
+          key={p}
+          onClick={() => go(p)}
+          aria-current={p === page ? "page" : undefined}
+          className={`${btn} ${p === page ? active : ""}`}
+        >
           {p}
         </button>
       ))}
-      <button className={`${btn} disabled:opacity-50`} onClick={() => go(page + 1)} disabled={page >= totalPages} aria-label="Next page">Next</button>
+      <button
+        className={`${btn} disabled:opacity-50`}
+        onClick={() => go(page + 1)}
+        disabled={page >= totalPages}
+        aria-label="Next page"
+      >
+        Next
+      </button>
     </nav>
   );
 }

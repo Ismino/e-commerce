@@ -8,7 +8,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     () =>
       new QueryClient({
         defaultOptions: { queries: { refetchOnWindowFocus: false, staleTime: 60_000 } },
-      })
+      }),
   );
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }
