@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { SortKey } from "@/lib/url";
+import type { Category } from "@/lib/types";
 
 const inputCls =
   "w-full rounded-md border border-rose-200/60 bg-white/95 px-3 py-2 backdrop-blur focus:outline-none focus:ring-2 focus:ring-rose-400";
@@ -16,11 +17,14 @@ export default function FiltersBar() {
   useEffect(() => {
     const id = setTimeout(() => update({ q: search || undefined, page: 1 }), 400);
     return () => clearTimeout(id);
-  }, [search]); // eslint-disable-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   const update = (patch: Record<string, string | number | undefined>) => {
     const q = new URLSearchParams(params);
-    Object.entries(patch).forEach(([k, v]) => (v === undefined || v === "") ? q.delete(k) : q.set(k, String(v)));
+    Object.entries(patch).forEach(([k, v]) =>
+      v === undefined || v === "" ? q.delete(k) : q.set(k, String(v))
+    );
     router.push(`/catalog?${q.toString()}`);
   };
 
@@ -30,13 +34,25 @@ export default function FiltersBar() {
   const priceMax = params.get("priceMax") ?? "";
   const ratingMin = params.get("ratingMin") ?? "";
 
-  const { data: categories } = useQuery<string[]>({
+  const { data: categories, isPending } = useQuery<Category[]>({
     queryKey: ["categories"],
-    queryFn: async () => (await fetch("/api/categories")).json(),
+    queryFn: async () => {
+      const r = await fetch("/api/categories", { cache: "no-store" });
+      // kasta på icke-OK för att React Query ska kunna visa retry vid nätfel
+      if (!r.ok) throw new Error("Failed to fetch categories");
+      return (await r.json()) as Category[];
+    },
+    retry: 1,
   });
 
   const resetFilters = () =>
-    update({ category: undefined, priceMin: undefined, priceMax: undefined, ratingMin: undefined, page: 1 });
+    update({
+      category: undefined,
+      priceMin: undefined,
+      priceMax: undefined,
+      ratingMin: undefined,
+      page: 1,
+    });
 
   const sortOptions: { label: string; value: SortKey }[] = useMemo(
     () => [
@@ -51,19 +67,32 @@ export default function FiltersBar() {
   return (
     <section className="mb-4 rounded-2xl bg-gradient-to-br from-rose-200/60 to-sky-200/60 p-[1px] shadow-sm">
       <div className="grid grid-cols-1 gap-2 rounded-2xl border border-white/70 bg-white/90 p-3 backdrop-blur md:grid-cols-4">
+        {/* Search */}
         <div className="md:col-span-2">
           <label className="mb-1 block text-xs font-medium text-rose-700" htmlFor="search">Search</label>
           <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products…" className={inputCls} />
         </div>
 
+        {/* Category */}
         <div>
           <label className="mb-1 block text-xs font-medium text-rose-700" htmlFor="category">Category</label>
-          <select id="category" className={inputCls} value={category} onChange={(e) => update({ category: e.target.value || undefined, page: 1 })}>
+          <select
+            id="category"
+            className={inputCls}
+            value={category}
+            onChange={(e) => update({ category: e.target.value || undefined, page: 1 })}
+          >
             <option value="">All</option>
-            {categories?.map((c) => <option key={c} value={c}>{c}</option>)}
+            {isPending && <option disabled>Loading…</option>}
+            {categories?.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* Sort */}
         <div>
           <label className="mb-1 block text-xs font-medium text-rose-700" htmlFor="sort">Sort</label>
           <select id="sort" className={inputCls} value={sort} onChange={(e) => update({ sort: e.target.value, page: 1 })}>
@@ -71,6 +100,7 @@ export default function FiltersBar() {
           </select>
         </div>
 
+        {/* Price & rating */}
         <div className="grid grid-cols-3 gap-2 md:col-span-2">
           <div>
             <label className="mb-1 block text-xs font-medium text-rose-700" htmlFor="min">Min price</label>

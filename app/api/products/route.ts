@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   const pageSize = Math.max(1, Math.min(60, Number(sp.get("pageSize") ?? "12")));
   const skip = (page - 1) * pageSize;
 
-  // Behöver vi lokalt filter/sort som DummyJSON inte stödjer?
+  
   const needsLocal = !!priceMin || !!priceMax || !!ratingMin || sort !== "newest";
 
   // 1) Paginera hos DummyJSON (limit+skip) när det går
@@ -42,7 +42,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(payload, { headers: { "Cache-Control": "no-store" } });
   }
 
-  // 2) Annars: hämta större set och gör filter/sort/paginering lokalt
   const BIG_LIMIT = 1000;
   let endpoint = `${BASE}/products?limit=${BIG_LIMIT}`;
   if (q) endpoint = `${BASE}/products/search?q=${encodeURIComponent(q)}&limit=${BIG_LIMIT}`;

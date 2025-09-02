@@ -10,7 +10,7 @@ export default function CartDrawer() {
 
   return (
     <dialog id="cart-drawer" ref={dialogRef} className="w-full max-w-lg rounded-xl p-0">
-      {/* Ren vit header – ingen ikon */}
+      {/* */}
       <form method="dialog" className="sticky top-0 flex items-center justify-between border-b bg-white p-3">
         <h2 className="text-lg font-semibold">Your bag</h2>
         <button className="rounded-md border px-2 py-1 text-sm" aria-label="Close cart">✕</button>

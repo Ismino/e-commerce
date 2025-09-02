@@ -16,3 +16,5 @@ export type ProductsResponse = {
   pageSize: number;
   totalPages: number;
 };
+
+export type Category = { slug: string; name: string };
