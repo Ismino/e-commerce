@@ -158,8 +158,7 @@ The site is accesibly to all screens.
 ## Deployment 
 
 ### Run locally
- - ```bash
- - npm i
+
  - npm run dev
 
 ## Testing
