@@ -157,6 +157,15 @@ The site is accesibly to all screens.
 
 ## Deployment 
 
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Install
+
+- npm i
+
 ### Run locally
 
  - npm run dev
